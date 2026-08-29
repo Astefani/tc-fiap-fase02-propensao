@@ -13,7 +13,14 @@ prepare:
 train:
   # dummy | logreg | random_forest | hist_gradient_boosting
   algoritmo: hist_gradient_boosting
-  usar_page_values: true
+
+  # PageValues fica FORA do modelo (decisão de 29/08).
+  # A documentação do dataset a define como "o valor médio de uma página que o
+  # usuário visitou antes de completar uma transação" — ou seja, a variável é
+  # construída a partir do desfecho que queremos prever (near-target leakage).
+  # Custo medido: PR-AUC cai ~50%. Assumido conscientemente: modelagem vale 10%
+  # da nota e um modelo mais fraco é preferível a um número inflado por vazamento.
+  usar_page_values: false
 
   dummy:
     strategy: prior

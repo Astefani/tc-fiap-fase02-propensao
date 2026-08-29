@@ -64,7 +64,11 @@ def construir_preprocessador(usar_page_values: bool = True) -> ColumnTransformer
                 OneHotEncoder(handle_unknown="ignore", sparse_output=False),
                 COLUNAS_CATEGORICAS,
             ),
-        ]
+        ],
+        # Explícito de propósito: é este descarte que mantém PageValues fora do
+        # modelo quando usar_page_values=False. Deixar no default do sklearn
+        # esconderia uma decisão central do projeto atrás de uma omissão.
+        remainder="drop",
     )
 
 
