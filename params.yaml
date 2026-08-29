@@ -1,0 +1,35 @@
+# Decisões de modelagem rastreadas pelo DVC.
+#
+# Regra: entra aqui o que, mudando, INVALIDA o modelo — o DVC detecta a mudança e
+# re-executa os estágios afetados. Configuração de ambiente (URIs, nível de log)
+# mora no .env; constantes de domínio (grupos de colunas) moram em config.py.
+
+seed: 42
+
+prepare:
+  remover_duplicatas: true
+  test_size: 0.2
+
+train:
+  # dummy | logreg | random_forest | hist_gradient_boosting
+  algoritmo: hist_gradient_boosting
+  usar_page_values: true
+
+  dummy:
+    strategy: prior
+  logreg:
+    C: 1.0
+    max_iter: 1000
+    class_weight: balanced
+  random_forest:
+    n_estimators: 400
+    min_samples_leaf: 5
+    class_weight: balanced_subsample
+    n_jobs: -1
+  hist_gradient_boosting:
+    max_iter: 300
+    learning_rate: 0.06
+    max_leaf_nodes: 31
+
+evaluate:
+  limiar: 0.5
