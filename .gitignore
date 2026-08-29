@@ -1,0 +1,46 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# --- Ambiente virtual (Poetry in-project) ---
+.venv/
+
+# --- Ferramentas / caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# --- MLflow ---
+# Backend store (sqlite) e artefatos: estado local, nunca versionado.
+mlflow-store/
+mlruns/
+mlartifacts/
+
+# --- Dados e artefatos do pipeline ---
+# ATENÇÃO: não colocar regra genérica de `data/` aqui — ela impediria commitar os
+# ponteiros `*.dvc`, que SÃO o versionamento do dataset.
+# A partir do B5, o próprio DVC escreve as regras (data/raw/.gitignore etc.).
+# Até lá, o CSV cru fica de fora na mão:
+data/raw/*.csv
+data/processed/
+models/
+
+# --- Sincronização Mac <-> Ubuntu via SyncThing (fora do Git) ---
+# Planejamento e handoff; não faz parte do entregável.
+diversos/
+
+# --- Segredos / ambiente ---
+.env
+.env.*
+!.env.example
+
+# --- IDE / SO ---
+.vscode/
+.idea/
+.DS_Store
