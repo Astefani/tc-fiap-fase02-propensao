@@ -37,6 +37,13 @@ train:
     max_iter: 300
     learning_rate: 0.06
     max_leaf_nodes: 31
+    class_weight: balanced
 
 evaluate:
-  limiar: 0.5
+  # Limiar de decisão escolhido por F1 máximo em predições OUT-OF-FOLD
+  # (StratifiedKFold, 5 folds) sobre a partição de TREINO — nunca sobre o hold-out,
+  # que precisa permanecer intocado para a avaliação final.
+  # Em amostra o ótimo aparecia em 0,65 (o HistGB memoriza o treino: recall 1,000);
+  # out-of-fold o ótimo real é 0,45, com a curva bem plana entre 0,35 e 0,50.
+  # ⚠️ Recalcular se o algoritmo ou os hiperparâmetros mudarem.
+  limiar: 0.45
