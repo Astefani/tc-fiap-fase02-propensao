@@ -23,13 +23,10 @@ mlruns/
 mlartifacts/
 
 # --- Dados e artefatos do pipeline ---
-# ATENÇÃO: não colocar regra genérica de `data/` aqui — ela impediria commitar os
-# ponteiros `*.dvc`, que SÃO o versionamento do dataset.
-# A partir do B5, o próprio DVC escreve as regras (data/raw/.gitignore etc.).
-# Até lá, o CSV cru fica de fora na mão:
-data/raw/*.csv
-data/processed/
-models/
+# Gerenciados pelo DVC, que escreve as próprias regras nos .gitignore de cada
+# diretório (data/raw/.gitignore, data/processed/.gitignore, models/.gitignore).
+# NÃO adicionar regra genérica de `data/` aqui: ela impediria commitar os
+# ponteiros `*.dvc` e o `dvc.lock`, que SÃO o versionamento dos dados.
 
 # --- Sincronização Mac <-> Ubuntu via SyncThing (fora do Git) ---
 # Planejamento e handoff; não faz parte do entregável.

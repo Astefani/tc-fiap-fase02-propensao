@@ -1,0 +1,54 @@
+# Pipeline reproduzível: dado cru -> partições -> modelo -> métricas.
+#
+# Rode sempre com `make repro` (ou `poetry run dvc repro`): o `python` dos comandos
+# abaixo precisa ser o do .venv, e é o `poetry run` que coloca .venv/bin no PATH.
+#
+# Os arquivos-fonte estão em `deps` de propósito: sem eles o DVC só reagiria a
+# mudanças de dado, e editar train.py não re-executaria nada.
+
+stages:
+  prepare:
+    cmd: python -m propensao.prepare
+    deps:
+      - data/raw/online_shoppers_intention.csv
+      - src/propensao/prepare.py
+      - src/propensao/data.py
+      - src/propensao/config.py
+    params:
+      - seed
+      - prepare
+    outs:
+      - data/processed/treino.parquet
+      - data/processed/teste.parquet
+
+  train:
+    cmd: python -m propensao.train
+    deps:
+      - data/processed/treino.parquet
+      - src/propensao/train.py
+      - src/propensao/model.py
+      - src/propensao/preprocess.py
+      - src/propensao/features.py
+      - src/propensao/data.py
+      - src/propensao/config.py
+    params:
+      - seed
+      - train
+    outs:
+      - models/pipeline.joblib
+
+  evaluate:
+    cmd: python -m propensao.evaluate
+    deps:
+      - models/pipeline.joblib
+      - data/processed/teste.parquet
+      - src/propensao/evaluate.py
+      - src/propensao/data.py
+      - src/propensao/config.py
+    params:
+      - evaluate
+    metrics:
+      # cache: false -> o JSON fica no Git (é pequeno e serve de histórico),
+      # em vez de ir para o cache do DVC como os outros outputs.
+      - metrics/metrics.json:
+          cache: false
