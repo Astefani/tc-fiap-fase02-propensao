@@ -60,16 +60,16 @@ stages:
       size: 1740
     - path: src/propensao/preprocess.py
       hash: md5
-      md5: 9c4cd05a5b3ea4a934ac0c67a85d3c62
-      size: 3375
+      md5: 44dcf66076f082ca59f8c5beb7a9e451
+      size: 3633
     - path: src/propensao/tracking.py
       hash: md5
       md5: 5b3fb3c0b4d7f66fd4b987e2fd0edfa4
       size: 4375
     - path: src/propensao/train.py
       hash: md5
-      md5: 1dd4625ca225d15986c070c3939b7fa2
-      size: 2029
+      md5: 2d10a8e50829f3794aa57c8e16648998
+      size: 2709
     params:
       params.yaml:
         seed: 42
@@ -95,7 +95,7 @@ stages:
     outs:
     - path: models/mlflow_run.json
       hash: md5
-      md5: 14f2eed1b64e12736097ff30cc46804e
+      md5: c330fa0c86acd8200f5728616d3fcd70
       size: 112
     - path: models/pipeline.joblib
       hash: md5
@@ -110,7 +110,7 @@ stages:
       size: 79623
     - path: models/mlflow_run.json
       hash: md5
-      md5: 14f2eed1b64e12736097ff30cc46804e
+      md5: c330fa0c86acd8200f5728616d3fcd70
       size: 112
     - path: models/pipeline.joblib
       hash: md5

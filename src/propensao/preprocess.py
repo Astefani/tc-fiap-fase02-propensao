@@ -38,6 +38,20 @@ def _colunas_numericas(usar_page_values: bool) -> list[str]:
     return list(COLUNAS_NUMERICAS)
 
 
+def _log_e_escala() -> Pipeline:
+    """Comprime a cauda longa com ``log1p`` e depois padroniza.
+
+    As durações vão a 63.973 segundos com mediana de 599 — sem o ``log1p``, a
+    padronização sozinha deixaria quase tudo espremido perto de zero.
+    """
+    return Pipeline(
+        [
+            ("log1p", FunctionTransformer(np.log1p, feature_names_out="one-to-one")),
+            ("escala", StandardScaler()),
+        ]
+    )
+
+
 def construir_preprocessador(usar_page_values: bool = True) -> ColumnTransformer:
     """Monta o ``ColumnTransformer`` com um tratamento por grupo de colunas.
 
@@ -48,15 +62,9 @@ def construir_preprocessador(usar_page_values: bool = True) -> ColumnTransformer
     Returns:
         O transformador pronto para entrar no Pipeline.
     """
-    log_e_escala = Pipeline(
-        [
-            ("log1p", FunctionTransformer(np.log1p, feature_names_out="one-to-one")),
-            ("escala", StandardScaler()),
-        ]
-    )
     return ColumnTransformer(
         [
-            ("assimetricas", log_e_escala, _colunas_assimetricas(usar_page_values)),
+            ("assimetricas", _log_e_escala(), _colunas_assimetricas(usar_page_values)),
             ("numericas", StandardScaler(), _colunas_numericas(usar_page_values)),
             # sparse_output=False porque o HistGradientBoosting exige matriz densa.
             (
