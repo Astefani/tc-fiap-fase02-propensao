@@ -8,6 +8,7 @@ Três camadas, com fronteiras deliberadas:
 - este módulo — constantes de domínio e caminhos, que são código.
 """
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -26,12 +27,39 @@ class Ambiente(BaseSettings):
     mlflow_tracking_uri: str = "sqlite:///mlflow-store/mlflow.db"
     mlflow_experiment_name: str = "propensao-compra"
     mlflow_registered_model: str = "propensao-compra"
+
+    #: Só usados quando o tracking é um servidor remoto (DagsHub). Vazios com o
+    #: default sqlite, que não autentica.
+    mlflow_tracking_username: str = ""
+    mlflow_tracking_password: str = ""
+
     log_level: str = "INFO"
 
     model_config = SettingsConfigDict(env_file=RAIZ / ".env", extra="ignore")
 
 
 ambiente = Ambiente()
+
+
+def aplicar_credenciais_mlflow() -> None:
+    """Exporta as credenciais de tracking para o ambiente do processo.
+
+    O MLflow lê ``MLFLOW_TRACKING_USERNAME`` e ``MLFLOW_TRACKING_PASSWORD`` de
+    ``os.environ``, não de um objeto de configuração — e o pydantic-settings
+    carrega o ``.env`` para o objeto ``ambiente``, sem tocar em ``os.environ``.
+    Esta função é a ponte entre os dois.
+
+    Não faz nada quando as credenciais estão vazias, que é o caso do default
+    sqlite. Nunca sobrescreve o que já veio do ambiente: variável exportada no
+    shell ou injetada pelo container tem precedência sobre o ``.env``.
+    """
+    credenciais = {
+        "MLFLOW_TRACKING_USERNAME": ambiente.mlflow_tracking_username,
+        "MLFLOW_TRACKING_PASSWORD": ambiente.mlflow_tracking_password,
+    }
+    for chave, valor in credenciais.items():
+        if valor and chave not in os.environ:
+            os.environ[chave] = valor
 
 # --- Caminhos ---------------------------------------------------------------
 CAMINHO_PARAMS = RAIZ / "params.yaml"
