@@ -26,6 +26,7 @@ stages:
     deps:
       - data/processed/treino.parquet
       - src/propensao/train.py
+      - src/propensao/tracking.py
       - src/propensao/model.py
       - src/propensao/preprocess.py
       - src/propensao/features.py
@@ -36,13 +37,17 @@ stages:
       - train
     outs:
       - models/pipeline.joblib
+      # Ponte para evaluate e register: leva as referências do MLflow adiante.
+      - models/mlflow_run.json
 
   evaluate:
     cmd: python -m propensao.evaluate
     deps:
       - models/pipeline.joblib
+      - models/mlflow_run.json
       - data/processed/teste.parquet
       - src/propensao/evaluate.py
+      - src/propensao/tracking.py
       - src/propensao/data.py
       - src/propensao/config.py
     params:

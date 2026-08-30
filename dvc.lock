@@ -10,8 +10,8 @@ stages:
       isexec: true
     - path: src/propensao/config.py
       hash: md5
-      md5: 955a3e5cf62818da706c6adad4149851
-      size: 4172
+      md5: 04ba56b3f0d3433c9dbc9ca1f9a2a065
+      size: 4438
     - path: src/propensao/data.py
       hash: md5
       md5: 14503ea029e1cdf4ab04c00e455f8d09
@@ -44,8 +44,8 @@ stages:
       size: 263831
     - path: src/propensao/config.py
       hash: md5
-      md5: 955a3e5cf62818da706c6adad4149851
-      size: 4172
+      md5: 04ba56b3f0d3433c9dbc9ca1f9a2a065
+      size: 4438
     - path: src/propensao/data.py
       hash: md5
       md5: 14503ea029e1cdf4ab04c00e455f8d09
@@ -62,10 +62,14 @@ stages:
       hash: md5
       md5: 9c4cd05a5b3ea4a934ac0c67a85d3c62
       size: 3375
+    - path: src/propensao/tracking.py
+      hash: md5
+      md5: 5b3fb3c0b4d7f66fd4b987e2fd0edfa4
+      size: 4375
     - path: src/propensao/train.py
       hash: md5
-      md5: 198b6374d93eb6abf3031a3c59c7d405
-      size: 1132
+      md5: 1dd4625ca225d15986c070c3939b7fa2
+      size: 2029
     params:
       params.yaml:
         seed: 42
@@ -89,6 +93,10 @@ stages:
             max_leaf_nodes: 31
             class_weight: balanced
     outs:
+    - path: models/mlflow_run.json
+      hash: md5
+      md5: 14f2eed1b64e12736097ff30cc46804e
+      size: 112
     - path: models/pipeline.joblib
       hash: md5
       md5: 582b6712751fdfad5f4ac6ce364868bd
@@ -100,22 +108,30 @@ stages:
       hash: md5
       md5: 63b40bd670952ad304c9afafe7b669b8
       size: 79623
+    - path: models/mlflow_run.json
+      hash: md5
+      md5: 14f2eed1b64e12736097ff30cc46804e
+      size: 112
     - path: models/pipeline.joblib
       hash: md5
       md5: 582b6712751fdfad5f4ac6ce364868bd
       size: 1111170
     - path: src/propensao/config.py
       hash: md5
-      md5: 955a3e5cf62818da706c6adad4149851
-      size: 4172
+      md5: 04ba56b3f0d3433c9dbc9ca1f9a2a065
+      size: 4438
     - path: src/propensao/data.py
       hash: md5
       md5: 14503ea029e1cdf4ab04c00e455f8d09
       size: 1947
     - path: src/propensao/evaluate.py
       hash: md5
-      md5: 8ec53e5e052911b60df703349b18c328
-      size: 2629
+      md5: c8f9cc83ab3c5da51ae1312cef19d882
+      size: 3547
+    - path: src/propensao/tracking.py
+      hash: md5
+      md5: 5b3fb3c0b4d7f66fd4b987e2fd0edfa4
+      size: 4375
     params:
       params.yaml:
         evaluate:

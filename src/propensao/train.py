@@ -1,11 +1,14 @@
 """Estágio ``train`` do pipeline DVC: partição de treino → ``models/pipeline.joblib``.
 
-O rastreamento no MLflow entra neste módulo no bloco B7.
+Abre o run do MLflow que o ``evaluate`` vai completar com as métricas.
 """
 
 import joblib
+import mlflow
+import mlflow.sklearn
+from mlflow.models import infer_signature
 
-from propensao import config, data
+from propensao import config, data, tracking
 from propensao.logging_config import configurar_logging
 from propensao.model import criar_modelo_dos_params
 from propensao.preprocess import construir_pipeline
@@ -22,8 +25,25 @@ def main() -> None:
     modelo = criar_modelo_dos_params(params)
     pipeline = construir_pipeline(modelo, usar_page_values=params["train"]["usar_page_values"])
 
-    logger.info("Treinando %s em %s sessões", params["train"]["algoritmo"], f"{len(X):,}")
-    pipeline.fit(X, y)
+    tracking.configurar()
+    with mlflow.start_run(run_name=params["train"]["algoritmo"]) as run:
+        mlflow.log_params(tracking.params_de_treino(params))
+        mlflow.set_tags(tracking.tags_de_proveniencia())
+
+        logger.info("Treinando %s em %s sessões", params["train"]["algoritmo"], f"{len(X):,}")
+        pipeline.fit(X, y)
+
+        # signature e input_example viajam COM o modelo: quem o carregar do
+        # Registry descobre o formato de entrada sem precisar deste código.
+        info = mlflow.sklearn.log_model(
+            pipeline,
+            name="modelo",
+            signature=infer_signature(X, pipeline.predict(X)),
+            input_example=X.head(3),
+            skops_trusted_types=tracking.TIPOS_CONFIAVEIS,
+        )
+        tracking.salvar_referencias(run.info.run_id, info.model_uri)
+        logger.info("Run do MLflow: %s | modelo: %s", run.info.run_id, info.model_uri)
 
     config.CAMINHO_MODELO.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(pipeline, config.CAMINHO_MODELO)

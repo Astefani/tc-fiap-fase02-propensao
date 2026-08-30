@@ -69,6 +69,11 @@ CAMINHO_TREINO = DIR_PROCESSADO / "treino.parquet"
 CAMINHO_TESTE = DIR_PROCESSADO / "teste.parquet"
 DIR_MODELOS = RAIZ / "models"
 CAMINHO_MODELO = DIR_MODELOS / "pipeline.joblib"
+
+#: Ponte entre os estágios `train`, `evaluate` e o `register`: eles rodam em
+#: processos separados, e é por este arquivo que as métricas chegam ao run certo
+#: e que a promoção sabe qual modelo registrar.
+CAMINHO_REFS_MLFLOW = DIR_MODELOS / "mlflow_run.json"
 DIR_METRICAS = RAIZ / "metrics"
 CAMINHO_METRICAS = DIR_METRICAS / "metrics.json"
 
