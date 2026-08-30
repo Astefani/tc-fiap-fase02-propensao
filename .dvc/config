@@ -1,4 +1,7 @@
 [core]
-    remote = local
+    remote = dagshub
 ['remote "local"']
     url = ../../dvc-storage-fase02
+['remote "dagshub"']
+    url = s3://dvc
+    endpointurl = https://dagshub.com/Astefani/tc-fiap-fase02-propensao.s3
