@@ -1,4 +1,4 @@
-.PHONY: help install lint test repro metrics push pull mlflow-ui clean
+.PHONY: help install lint test data repro metrics push pull mlflow-ui clean
 
 # Sem alvo explícito, `make` mostra a ajuda em vez de executar o primeiro alvo.
 .DEFAULT_GOAL := help
@@ -15,6 +15,14 @@ lint:               ## Ruff sobre o código
 
 test:               ## Suíte de testes
 	poetry run pytest
+
+data:               ## Baixa o dataset cru do UCI (alternativa ao `dvc pull`, sem credencial)
+	@mkdir -p data/raw
+	curl -sL -o /tmp/shoppers.zip "https://archive.ics.uci.edu/static/public/468/online+shoppers+purchasing+intention+dataset.zip"
+	unzip -o -j /tmp/shoppers.zip online_shoppers_intention.csv -d data/raw/
+	@rm -f /tmp/shoppers.zip
+	@echo "--- conferindo contra o ponteiro versionado ---"
+	poetry run dvc status data/raw/online_shoppers_intention.csv.dvc
 
 repro:              ## Executa o pipeline DVC (pula estágios não afetados)
 	poetry run dvc repro
