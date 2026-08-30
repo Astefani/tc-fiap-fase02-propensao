@@ -1,4 +1,4 @@
-.PHONY: help install lint test data repro metrics push pull mlflow-ui clean
+.PHONY: help install lint test data repro metrics register push pull mlflow-ui clean
 
 # Sem alvo explícito, `make` mostra a ajuda em vez de executar o primeiro alvo.
 .DEFAULT_GOAL := help
@@ -30,6 +30,9 @@ repro:              ## Executa o pipeline DVC (pula estágios não afetados)
 metrics:            ## Métricas do último run e diferença para o commit anterior
 	poetry run dvc metrics show
 	poetry run dvc metrics diff
+
+register:           ## Promove o modelo atual no Model Registry como @champion
+	poetry run python -m propensao.register
 
 push:               ## Envia dados e artefatos para o remote do DVC
 	poetry run dvc push
