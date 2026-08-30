@@ -1,0 +1,46 @@
+# O build context vira upload para o daemon: tudo que não é necessário para
+# construir a imagem sai daqui. Sem isso, o cache do DVC e o histórico do Git
+# viajam junto e o build fica lento à toa.
+
+# Ambiente local — os shebangs apontam para caminhos do host
+.venv/
+
+# O DVC precisa de .git/ e .dvc/ em tempo de EXECUÇÃO, não de build.
+# Eles chegam pelo bind mount do compose. Copiar .git para dentro da imagem
+# inflaria o tamanho e forçaria rebuild a cada commit.
+.git/
+.dvc/cache/
+.dvc/tmp/
+
+# Dados e artefatos: gerenciados pelo DVC, chegam pelo mount ou pelo pipeline
+data/
+models/
+metrics/
+
+# Estado local do MLflow
+mlflow-store/
+mlruns/
+mlartifacts/
+
+# Segredos: NUNCA na imagem. Chegam em tempo de execução, pelo mount.
+.env
+.env.*
+!.env.example
+
+# Fora do entregável
+notebooks/
+diversos/
+docs/
+tests/
+
+# Caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Meta
+Dockerfile
+.dockerignore

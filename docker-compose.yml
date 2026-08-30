@@ -1,0 +1,20 @@
+# Um serviço só. O servidor MLflow que este arquivo previa foi cortado: o
+# tracking vive no servidor hospedado do DagsHub, que faz o mesmo sem container.
+
+services:
+  train:
+    build: .
+    image: propensao:latest
+
+    # O projeto INTEIRO montado, e não só data/. O `dvc repro` precisa de
+    # .git/ e .dvc/, que o .dockerignore deixa fora da imagem de propósito.
+    # É o mount que também entrega o .env, com as credenciais do MLflow.
+    volumes:
+      - .:/app
+
+    # uid/gid do host: sem isso, os arquivos que o pipeline gera no volume
+    # saem com dono errado e exigem sudo para apagar. O default 1000 cobre o
+    # caso comum; para outro uid: `UID=$(id -u) GID=$(id -g) docker compose ...`
+    user: "${UID:-1000}:${GID:-1000}"
+
+    working_dir: /app
