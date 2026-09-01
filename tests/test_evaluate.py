@@ -24,7 +24,7 @@ def test_separacao_perfeita_leva_as_metricas_ao_maximo() -> None:
 
 
 def test_limiar_troca_recall_por_precisao() -> None:
-    """Subir o limiar reduz o recall — é o trade-off que o 0,45 arbitra."""
+    """Subir o limiar reduz o recall — é o trade-off que `evaluate.limiar` arbitra."""
     y = pd.Series([0, 1, 1, 1])
     probabilidades = np.array([0.10, 0.40, 0.60, 0.90])
 

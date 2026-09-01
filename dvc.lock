@@ -74,7 +74,7 @@ stages:
       params.yaml:
         seed: 42
         train:
-          algoritmo: hist_gradient_boosting
+          algoritmo: random_forest
           usar_page_values: false
           dummy:
             strategy: prior
@@ -95,12 +95,12 @@ stages:
     outs:
     - path: models/mlflow_run.json
       hash: md5
-      md5: c330fa0c86acd8200f5728616d3fcd70
+      md5: 7457f57a6a741e5891fe050ed353c116
       size: 112
     - path: models/pipeline.joblib
       hash: md5
-      md5: 582b6712751fdfad5f4ac6ce364868bd
-      size: 1111170
+      md5: faf301607ce662476c99ef9274001828
+      size: 34816715
   evaluate:
     cmd: python -m propensao.evaluate
     deps:
@@ -110,12 +110,12 @@ stages:
       size: 79623
     - path: models/mlflow_run.json
       hash: md5
-      md5: c330fa0c86acd8200f5728616d3fcd70
+      md5: 7457f57a6a741e5891fe050ed353c116
       size: 112
     - path: models/pipeline.joblib
       hash: md5
-      md5: 582b6712751fdfad5f4ac6ce364868bd
-      size: 1111170
+      md5: faf301607ce662476c99ef9274001828
+      size: 34816715
     - path: src/propensao/config.py
       hash: md5
       md5: 04ba56b3f0d3433c9dbc9ca1f9a2a065
@@ -135,9 +135,9 @@ stages:
     params:
       params.yaml:
         evaluate:
-          limiar: 0.45
+          limiar: 0.4
     outs:
     - path: metrics/metrics.json
       hash: md5
-      md5: 41cb29fdc480f48f7d6fcb5efe79db11
-      size: 163
+      md5: c5bb2b14efedd0e502c3c77351e25f60
+      size: 164

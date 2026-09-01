@@ -12,7 +12,14 @@ prepare:
 
 train:
   # dummy | logreg | random_forest | hist_gradient_boosting
-  algoritmo: hist_gradient_boosting
+  # Escolhido em 01/09: o RF vence o HistGB em TODAS as métricas do hold-out
+  # (PR-AUC 0,374 vs 0,356) — mas só depois de recalibrar o limiar, porque o
+  # 0,45 anterior tinha sido calculado para o HistGB. Ver evaluate.limiar.
+  # ⚠️ Custo conhecido e aceito: o RF NÃO é reprodutível bit-a-bit entre
+  # arquiteturas (x86 0,374091 · ARM 0,376405, mesmo commit e mesmo dvc.lock).
+  # O HistGB é. O Dockerfile fixa bibliotecas e sistema, mas não a arquitetura:
+  # fechar essa lacuna exigiria `platform: linux/amd64` no compose.
+  algoritmo: random_forest
 
   # PageValues fica FORA do modelo (decisão de 29/08).
   # A documentação do dataset a define como "o valor médio de uma página que o
@@ -43,7 +50,11 @@ evaluate:
   # Limiar de decisão escolhido por F1 máximo em predições OUT-OF-FOLD
   # (StratifiedKFold, 5 folds) sobre a partição de TREINO — nunca sobre o hold-out,
   # que precisa permanecer intocado para a avaliação final.
-  # Em amostra o ótimo aparecia em 0,65 (o HistGB memoriza o treino: recall 1,000);
-  # out-of-fold o ótimo real é 0,45, com a curva bem plana entre 0,35 e 0,50.
-  # ⚠️ Recalcular se o algoritmo ou os hiperparâmetros mudarem.
-  limiar: 0.45
+  # ⚠️ Recalculado a cada troca de algoritmo ou de hiperparâmetros. Histórico:
+  #   hist_gradient_boosting -> 0,45  (em amostra o ótimo aparecia em 0,65, porque
+  #       o HistGB memoriza o treino com recall 1,000; out-of-fold cai para 0,45,
+  #       com a curva bem plana entre 0,35 e 0,50)
+  #   random_forest          -> 0,40  (ótimo 0,41 na grade de 0,01; zona plana
+  #       entre 0,39 e 0,43; 0,40 é o ótimo na mesma grade de 0,05 do HistGB)
+  # Reproduzir a conta: `python diversos/escolher_limiar.py`
+  limiar: 0.40
